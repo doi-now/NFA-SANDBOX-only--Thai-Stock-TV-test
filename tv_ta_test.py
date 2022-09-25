@@ -1,0 +1,40 @@
+from symtable import Symbol
+from tradingview_ta import TA_Handler, Interval, Exchange
+import os
+# Credit to all library and sources or folk that I used to mix in this code#
+
+liststock = ["2S", "7UP", "A", "A5", "AAV", "ABICO", "ABM", "ABPIF", "ACAP", "ACC", "ACE", "ACG", "ADB", "ADD", "ADVANC", "AEONTS", "AF", "AFC", "AGE", "AH", "AHC", "AI", "AIE", "AIRA", "AIT", "AJ", "AJA", "AKP", "AKR", "ALL", "ALLA", "ALPHAX", "ALT", "AMA", "AMANAH", "AMARIN", "AMATA", "AMATAV", "AMC", "AMR", "ANAN", "AOT", "AP", "APCO", "APCS", "APP", "APURE", "AQ", "AQUA", "ARIN", "ARIP", "ARROW", "AS", "ASAP", "ASEFA", "ASIA", "ASIAN", "ASIMAR", "ASK", "ASN", "ASP", "ASW", "ATP30", "AU", "AUCT", "AWC", "AYUD", "B", "B52", "BA", "BAFS", "BAM", "BANPU", "BAY", "BBGI", "BBIK", "BBL", "BC", "BCH", "BCP", "BCPG", "BCPG.F", "BCT", "BDMS", "BE8", "BEAUTY", "BEC", "BEM", "BEYOND", "BGC", "BGRIM", "BGT", "BH", "BIG", "BIOTEC", "BIS", "BIZ", "BJC", "BJCHI", "BKD", "BKI", "BKKCP", "BLA", "BLAND", "BLESS", "BM", "BOL", "BPP", "BR", "BRI", "BROCK", "BROOK", "BRR", "BRRGIF", "BSBM", "BSM", "BTNC", "BTS", "BTSGIF", "BTW", "BUI", "BWG", "BYD", "CAZ", "CBG", "CCET", "CCP", "CEN", "CENTEL", "CEYE", "CFRESH", "CGD", "CGH", "CH", "CHAYO", "CHEWA", "CHG", "CHIC", "CHO", "CHOW", "CI", "CIG", "CIMBT", "CITY", "CIVIL", "CK", "CKP", "CM", "CMAN", "CMC", "CMO", "CMR", "CNT", "COLOR", "COM7", "COMAN", "COTTO", "CPALL", "CPALL.F", "CPANEL", "CPF", "CPH", "CPI", "CPL", "CPN", "CPNCG", "CPR", "CPT", "CPTGF", "CPW", "CRANE", "CRC", "CRD", "CSC", "CSP", "CSS", "CTARAF", "CTW", "CV", "CWT", "D", "DCC", "DCON", "DDD", "DELTA", "DEMCO", "DHOUSE", "DIF", "DIMET", "DITTO", "DMT", "DOD", "DOHOME", "DPAINT", "DRT", "DTAC", "DUSIT", "DV8", "EA", "EASON", "EASTW", "ECF", "ECL", "EE", "EFORL", "EGATIF", "EGCO", "EKH", "EMC", "EP", "EPG", "ERW", "ERWPF", "ESSO", "ESTAR", "ETC", "ETE", "EVER", "F&D", "FANCY", "FLOYD", "FMT", "FN", "FNS", "FORTH", "FPI", "FPT", "FSMART", "FSS", "FTE", "FTI", "FUTUREPF", "FVC", "GBX", "GC", "GCAP", "GEL", "GENCO", "GFPT", "GGC", "GIFT", "GJS", "GLAND", "GLOBAL", "GLOCON", "GLORY", "GPI", "GPSC", "GRAMMY", "GRAND", "GREEN", "GSC", "GTB", "GULF", "GUNKUL", "GYT", "HANA", "HARN", "HEMP", "HENG", "HFT", "HL", "HMPRO", "HPF", "HPT", "HTC", "HTECH", "HUMAN", "HYDRO", "ICC", "ICHI", "ICN", "IFS", "IHL", "IIG", "III", "ILINK", "ILM", "IMH", "IND", "INET", "INGRS", "INOX", "INSET", "INSURE", "INTUCH", "IP", "IRC", "IRCP", "IRPC", "IT", "ITD", "ITEL", "IVL", "J", "JAK", "JAS", "JASIF", "JASIF.F", "JCK", "JCKH", "JCT", "JDF", "JKN", "JMART", "JMT", "JR", "JSP", "JTS", "JUBILE", "JWD", "K", "KAMART", "KASET", "KBANK", "KBANK.F", "KBS", "KBSPIF", "KC", "KCAR", "KCC", "KCE", "KCM", "KEX", "KGI", "KIAT", "KISS", "KK", "KKC", "KKP", "KOOL", "KPNPF", "KSL", "KTB", "KTC", "KTIS", "KUMWEL", "KUN", "KWC", "KWI", "KWM", "KYE", "L&E", "LALIN", "LANNA", "LDC", "LEE", "LEO", "LH", "LHFG", "LHK", "LHPF", "LIT", "LOXLEY", "LPF", "LPH", "LPN", "LRH", "LST", "LUXF", "M", "MACO", "MAJOR", "MAKRO", "MALEE", "MANRIN", "MATCH", "MBAX", "MBK", "MC", "M-CHAI", "MCOT", "MCS", "MDX", "MEGA", "MENA", "META", "METCO", "MFC", "MFEC", "MGT", "MICRO", "MIDA", "M-II", "MILL", "MINT", "MITSIB", "MJD", "MJLF", "MK", "ML", "MNIT", "MNIT2", "MNRF", "MODERN", "MONO", "MOONG", "MORE", "MPIC", "MSC", "MST", "MTC", "MTI", "MUD", "MVP", "NATION", "NBC", "NC", "NCAP", "NCH", "NCL", "NDR", "NEP", "NER", "NETBAY", "NEW", "NEWS", "NEX", "NFC", "NINE", "NKI", "NNCL", "NOBLE", "NOVA", "NRF", "NSI", "NSL", "NTV", "NUSA", "NV", "NVD", "NWR", "NYT", "OGC", "OHTL", "OISHI", "ONEE", "OR", "OR.F", "ORI", "OSP", "OTO", "PACO", "PAF", "PAP", "PATO", "PB", "PCSGH", "PDG", "PDJ", "PEACE", "PERM", "PF", "PG", "PHOL", "PICO", "PIMO", "PIN", "PJW", "PK", "PL", "PLANB", "PLANET", "PLAT", "PLE", "PLUS", "PM", "PMTA", "POPF", "PORT", "PPF", "PPM", "PPP", "PPPM", "PPS", "PR9", "PRAKIT", "PRAPAT", "PREB", "PRECHA", "PRG", "PRIME", "PRIN", "PRINC", "PRM", "PROEN", "PROS", "PROUD", "PSG", "PSH", "PSL", "PSTC", "PT", "PTC", "PTECH", "PTG", "PTL", "PTT", "PTTEP", "PTTGC", "PYLON", "Q-CON", "QH", "QHHR", "QHOP", "QHPF", "QLT", "QTC", "RAM", "RATCH", "RBF", "RCL", "RICHY", "RJH", "RML", "ROCK", "ROH", "ROJNA", "RP", "RPC", "RPH", "RS", "RSP", "RT", "RWI", "S", "S11", "SA", "SAAM", "SABINA", "SABUY", "SAK", "SALEE", "SAM", "SAMART", "SAMCO", "SAMTEL", "SANKO", "SAPPE", "SAT", "SAUCE", "SAWAD", "SC", "SCAP", "SCB", "SCC", "SCC.F", "SCCC", "SCG", "SCGP", "SCI", "SCM", "SCN", "SCP", "SDC", "SE", "SEAFCO", "SEAOIL", "SECURE", "SE-ED", "SELIC", "SENA", "SENAJ", "SFLEX", "SFT", "SGF", "SGP", "SHANG", "SHR", "SIAM", "SICT", "SIMAT", "SINGER", "SIRI", "SIRIP", "SIS", "SISB", "SITHAI", "SK", "SKE", "SKN", "SKR", "SKY", "SLP", "SMART", "SMD", "SMIT", "SMK", "SMPC", "SMT", "SNC", "SNNP", "SNP", "SO", "SOLAR", "SONIC", "SORKON", "SPA", "SPACK", "SPALI", "SPC", "SPCG", "SPG", "SPRC", "SPVI", "SQ", "SR", "SRICHA", "SSC", "SSF", "SSP", "SSPF", "SSSC", "SST", "STA", "STANLY", "STARK", "STC", "STEC", "STECH", "STGT", "STI", "STOWER", "STP", "STPI", "SUC", "SUN", "SUPER", "SUPEREIF", "SUSCO", "SUTHA", "SVH", "SVI", "SVOA", "SVT", "SWC", "SYMC", "SYNEX", "SYNTEC", "TACC", "TAE", "TAKUNI", "TAPAC", "TASCO", "TC", "TCAP", "TCC", "TCCC", "TCJ", "TCMC", "TEAM", "TEAMG", "TEKA", "TFFIF", "TFG", "TFI", "TFM", "TFMAMA", "TGE", "TGH", "TGPRO", "TH", "THANA", "THANI", "THCOM", "THE", "THG", "THIP", "THMUI", "THRE", "THREL", "TIDLOR", "TIF1", "TIGER", "TIPCO", "TIPH", "TISCO", "TITLE", "TK", "TKC", "TKN", "TKS", "TKT", "TLHPF", "TLI", "TM", "TMC", "TMD", "TMI", "TMILL", "TMT", "TMW", "TNDT", "TNH", "TNITY", "TNL", "TNP", "TNPC", "TNR", "TOA", "TOG", "TOP", "TPAC", "TPBI", "TPCH", "TPCS", "TPIPL", "TPIPP", "TPLAS", "TPOLY", "TPP", "TPS", "TQM", "TQR", "TR", "TRC", "TRITN", "TRT", "TRU", "TRUE", "TRUBB", "TRV", "TSC", "TSE", "TSI", "TSR", "TSTE", "TSTH", "TTA", "TTB", "TTCL", "TTI", "TTW", "TU", "TVDH", "TVI", "TVO", "TVT", "TWP", "TWPC", "TWZ", "TYCN", "U", "UAC", "UBE", "UBIS", "UEC", "UKEM", "UMI", "UMS", "UNIQ", "UOBKH", "UP", "UPA", "UPF", "UPOIC", "UREKA", "UTP", "UV", "UVAN", "VARO", "VCOM", "VGI", "VIBHA", "VIH", "VL", "VNG", "VPO", "VRANDA", "W", "WAVE", "WFX", "WGE", "WHA", "WHAUP", "WICE", "WIIK", "WIN", "WINMED", "WINNER", "WORK", "WP", "WPH", "XO", "XPG", "YGG", "YONG", "YUASA", "ZEN", "ZIGA"]
+###### Is use this you are agree to Disclaimer ######
+print("⚠️  Not financial advice, just a data from Tradingview. ⚠️")
+print("__________________________________________________________________________")
+print("➡️➡️  All data and information is provided “as is” for informational purposes only, and is not intended for trading purposes or financial, investment, tax, legal, accounting or other advice.")
+print("➡️➡️  ข้อมูลและข้อมูลทั้งหมดมีให้ -ตามที่เป็น- เพื่อจุดประสงค์ในการให้ข้อมูลเท่านั้น และไม่ได้มีวัตถุประสงค์เพื่อการค้าหรือคำแนะนำทางการเงิน การลงทุน ภาษี กฎหมาย การบัญชี หรือคำแนะนำอื่นๆ")
+print("__________________________________________________________________________")
+agree = input("Please enter 999888 to AGREE? / กด 999888 เพื่อตกลง? : ")
+if agree != "999888" :
+  print("❌Disagreed")
+  os._exit(os.X_OK)
+print(">>> Start scan all TH stock (Tradingview data), CRTL + C to ❌stop <<<")
+for xxx in liststock:
+    stock1 = TA_Handler(
+        symbol=xxx,
+        screener="thailand",
+        exchange="SET",
+        interval="1d") 
+    try:
+      print(stock1.symbol, stock1.interval, stock1.get_analysis().summary)
+    except Exception as e:
+      print("No Data")
+      continue
+os.system('pause')  
+
+# ________for later update________
+# print("*** STRONG BUY LIST ***")
+# print(strongBuy_list)
+# print("*** STRONG SELL LIST ***")
+# print(strongSell_list)
+## End all, stop screen after finished ##
+# os.system('pause')  
+# #    proxies={'http': 'http://8.8.8.8:8080', 'https': 'https://8.8.8.8:443'})  #incase use proxy
+# print(stock1.symbol, stock1.interval, stock1.get_analysis().moving_averages)
+# Example output: {"RECOMMENDATION": "BUY", "BUY": 8, "NEUTRAL": 6, "SELL": 3}
